@@ -20,7 +20,7 @@ jobs:
     permissions:
       contents: write
     outputs:
-      tag: ${{ steps.vars.outputs.tag }}   # 显式声明输出，供下游使用
+      tag: ${{ steps.vars.outputs.tag }}
     steps:
       - uses: actions/checkout@v4
 
@@ -33,14 +33,15 @@ jobs:
             echo "tag=${{ github.ref_name }}" >> $GITHUB_OUTPUT
           fi
 
-      - name: Create a GitHub release
+      - name: Create GitHub Release
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ steps.vars.outputs.tag }}
         run: |
           gh release create "$tag" \
               --title="${GITHUB_REPOSITORY#*/} ${tag#v}" \
-              --generate-notes
+              --generate-notes \
+              --target ${{ github.sha }}
 
   upload_binaries:
     needs: release
@@ -84,11 +85,26 @@ jobs:
             tar -czf "$file.tar.gz" "$file"
             echo "file=$file.tar.gz" >> $GITHUB_OUTPUT
           fi
-      
+
+      - name: Wait until release exists (retry)
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ env.TAG }}
+        run: |
+          for i in {1..5}; do
+            if gh release view "$tag" >/dev/null 2>&1; then
+              echo "Release $tag found"
+              exit 0
+            fi
+            echo "Release not yet available, retrying in 5s..."
+            sleep 5
+          done
+          echo "Release $tag not found after retries"
+          exit 1
 
       - name: Upload release artifact
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ env.TAG }}
         run: |
           gh release upload "$tag" \
