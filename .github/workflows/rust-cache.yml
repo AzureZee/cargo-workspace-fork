@@ -21,7 +21,7 @@ jobs:
           targets: ${{ matrix.target }}
       - uses: Swatinem/rust-cache@v2
         with:
-          cargo-workspaces
+          workspaces: cargo-workspaces
 
       - name: Test
         run: cargo test --target ${{ matrix.target }} --manifest-path cargo-workspaces/Cargo.toml
