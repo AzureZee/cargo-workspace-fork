@@ -38,7 +38,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ steps.vars.outputs.tag }}
         run: |
-          gh release create "$tag" \
+          gh release create "$TAG" \
               --title="${GITHUB_REPOSITORY#*/} ${tag#v}" \
               --generate-notes \
               --target ${{ github.sha }}
@@ -92,14 +92,14 @@ jobs:
           tag: ${{ env.TAG }}
         run: |
           for i in {1..5}; do
-            if gh release view "$tag" >/dev/null 2>&1; then
-              echo "Release $tag found"
+            if gh release view "$TAG" >/dev/null 2>&1; then
+              echo "Release $TAG found"
               exit 0
             fi
             echo "Release not yet available, retrying in 5s..."
             sleep 5
           done
-          echo "Release $tag not found after retries"
+          echo "Release $TAG not found after retries"
           exit 1
 
       - name: Upload release artifact
@@ -107,6 +107,6 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ env.TAG }}
         run: |
-          gh release upload "$tag" \
+          gh release upload "$TAG" \
               "${{ steps.artifact.outputs.file }}" \
               --clobber
