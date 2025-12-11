@@ -1,0 +1,11 @@
+---
+source: tests/create.rs
+assertion_line: 265
+expression: "&manifest"
+---
+[package]
+name = "dep3"
+version = "0.0.0"
+edition = "2018"
+
+[dependencies]

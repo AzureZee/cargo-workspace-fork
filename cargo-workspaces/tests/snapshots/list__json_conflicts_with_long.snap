@@ -1,0 +1,13 @@
+---
+source: tests/list.rs
+assertion_line: 63
+expression: err
+
+---
+error: The argument '--long' cannot be used with '--json'
+
+USAGE:
+    cargo workspaces list --long
+
+For more information try --help
+

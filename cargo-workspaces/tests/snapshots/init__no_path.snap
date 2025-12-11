@@ -1,0 +1,7 @@
+---
+source: tests/init.rs
+expression: err
+
+---
+error: given path new is not a folder
+

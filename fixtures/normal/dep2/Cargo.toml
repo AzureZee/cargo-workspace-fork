@@ -1,0 +1,8 @@
+[package]
+name = "dep2"
+version = "0.1.0"
+
+edition = "2018"
+
+[dependencies]
+pre_dep1 = { version = "0.1.0", path = "../dep1", package = "dep1" }
