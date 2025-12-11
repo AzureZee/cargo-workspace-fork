@@ -38,7 +38,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ steps.vars.outputs.tag }}
         run: |
-          gh release create "$TAG" \
+          gh release create "$tag" \
               --title="${GITHUB_REPOSITORY#*/} ${tag#v}" \
               --generate-notes \
               --target ${{ github.sha }}
